@@ -2,8 +2,6 @@
 #include <SPI.h>
 #include <LoRa.h>
 
-//Libraries for OLED Display
-
 //define the pins used by the LoRa transceiver module
 #define SCK 5
 #define MISO 19
@@ -17,7 +15,6 @@
 //915E6 for North America
 #define BAND 923E6
 
-
 String LoRaData;
 
 void setup() { 
@@ -28,11 +25,12 @@ void setup() {
   SPI.begin(SCK, MISO, MOSI, SS);
   //setup LoRa transceiver module
   LoRa.setPins(SS, RST, DIO0);
+  
   while (!LoRa.begin(BAND)) {
     Serial.println("Starting LoRa failed!");
     delay(500);
   }
-  Serial.println("LoRa Test pass");
+  Serial.println("LoRa Initializing OK!");
 }
 
 void loop() {

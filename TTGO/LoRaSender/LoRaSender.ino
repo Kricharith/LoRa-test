@@ -1,16 +1,6 @@
-/*********
-  Rui Santos
-  Complete project details at https://RandomNerdTutorials.com/ttgo-lora32-sx1276-arduino-ide/
-*********/
-
 //Libraries for LoRa
 #include <SPI.h>
 #include <LoRa.h>
-
-//Libraries for OLED Display
-#include <Wire.h>
-#include <Adafruit_GFX.h>
-#include <Adafruit_SSD1306.h>
 
 //define the pins used by the LoRa transceiver module
 #define SCK 5
