@@ -23,7 +23,7 @@
 //433E6 for Asia
 //866E6 for Europe
 //915E6 for North America
-#define BAND 866E6
+#define BAND 923E6
 
 //OLED pins
 #define OLED_SDA 4
