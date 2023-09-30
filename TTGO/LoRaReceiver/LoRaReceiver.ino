@@ -7,7 +7,6 @@
 #include <SPI.h>
 #include <LoRa.h>
 
-
 //Libraries for OLED Display
 #include <Wire.h>
 #include <Adafruit_GFX.h>
@@ -24,8 +23,16 @@
 //433E6 for Asia
 //866E6 for Europe
 //915E6 for North America
-#define BAND 923E6
+#define BAND 866E6
 
+//OLED pins
+#define OLED_SDA 4
+#define OLED_SCL 15 
+#define OLED_RST 16
+#define SCREEN_WIDTH 128 // OLED display width, in pixels
+#define SCREEN_HEIGHT 64 // OLED display height, in pixels
+
+Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RST);
 
 String LoRaData;
 
@@ -88,7 +95,6 @@ void loop() {
     int rssi = LoRa.packetRssi();
     Serial.print(" with RSSI ");    
     Serial.println(rssi);
-
 
    // Dsiplay information
    display.clearDisplay();
