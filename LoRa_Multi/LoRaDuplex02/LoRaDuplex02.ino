@@ -53,6 +53,9 @@ byte destination = 0xFF;      // destination to send to
 long lastSendTime = 0;        // last send time
 int interval = 2000;          // interval between sends
 
+unsigned long previousMillis = 0;
+int count = 0;
+
 void setup() {
   Serial.begin(115200);                   // initialize serial
 
@@ -101,6 +104,23 @@ void setup() {
 }
 
 void loop() {
+  unsigned long currentMillis = millis();
+    if (currentMillis - previousMillis >= 10000) {
+      previousMillis = currentMillis;
+      
+      String Mymessage = "Hello " + String(count);
+      sendMessage(Mymessage);
+      Serial.println("Sending " + Mymessage);
+      display.clearDisplay();
+      display.setCursor(0,0);
+      display.print("LORA Sending");
+      display.setCursor(0,20);
+      display.print(Mymessage);
+      display.display(); 
+      delay(100);
+      count += 1;
+      Mymessage = "";
+    }
   if(Serial.available()>0)
    {
     //read data

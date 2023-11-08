@@ -121,5 +121,16 @@ void onReceive(int packetSize) {
   Serial.println("RSSI: " + String(LoRa.packetRssi()));
   Serial.println("Snr: " + String(LoRa.packetSnr()));
   Serial.println();
+  delay(500);
+  String Mymessage = "What!!! " + String(incoming);
+  sendMessage(Mymessage);
+  Serial.println("Sending "+ Mymessage);
+  
+  
+  // String Mymessage = "What " + String(incoming);
+  // sendMessage(Mymessage);
+  // Serial.println("Sending " + Mymessage);
+  // delay(100);
+  // Mymessage = "";
 }
 
