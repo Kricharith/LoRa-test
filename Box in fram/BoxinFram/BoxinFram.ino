@@ -134,7 +134,7 @@ uint8_t readReg(uint8_t reg, const void* pBuf, size_t size)
 void display (){
   lcd.display(); // เปิดการแสดงตัวอักษร
   lcd.backlight();
-  delay(1000);
+  delay(4000);
   lcd.setCursor(0, 0);
   lcd.print("T in Air : ");
   lcd.setCursor(11, 0);
@@ -143,7 +143,7 @@ void display (){
   lcd.print("H in Air : ");
   lcd.setCursor(11, 1);
   lcd.print(h_in_a);
-  delay(5000); // หน่วงเวลา 0.5 วินาที
+  delay(4000); // หน่วงเวลา 0.5 วินาที
   lcd.clear(); // ล้างหน้าจอ
   lcd.setCursor(0, 0);
   lcd.print("T in Box : ");
@@ -153,7 +153,7 @@ void display (){
   lcd.print("H in Box : ");
   lcd.setCursor(11, 1);
   lcd.print(h_in_b);
-  delay(5000); // หน่วงเวลา 0.5 วินาที
+  delay(4000); // หน่วงเวลา 0.5 วินาที
   lcd.clear(); // ล้างหน้าจอ
   lcd.setCursor(0, 0);
   lcd.print("LUX:");
@@ -165,7 +165,7 @@ void display (){
   lcd.print("H in S:");
   lcd.setCursor(10, 1);
   lcd.print(h_in_s);
-  delay(5000); // หน่วงเวลา 0.5 วินาที
+  delay(4000); // หน่วงเวลา 0.5 วินาที
   lcd.clear(); // ล้างหน้าจอ
   lcd.noDisplay();
   lcd.noBacklight();
