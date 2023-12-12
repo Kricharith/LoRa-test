@@ -96,7 +96,7 @@ void setup() {
     Serial.println("Starting LoRa failed!");
     while (1);
   }
-  LoRa.setTxPower(20);
+
   Serial.println("LoRa init succeeded.");
   display.setCursor(0,10);
   display.println("LoRa Initializing OK!");
@@ -105,7 +105,7 @@ void setup() {
 
 void loop() {
   unsigned long currentMillis = millis();
-    if (currentMillis - previousMillis >= 3000) {
+    if (currentMillis - previousMillis >= 10000) {
       previousMillis = currentMillis;
       
       String Mymessage = "Hello " + String(count);
@@ -192,9 +192,6 @@ void onReceive(int packetSize) {
   display.print("LORA Received");
   display.setCursor(0,20);
   display.print(incoming);
-  display.setCursor(0,40);
-  display.print("RSSI: " + String(LoRa.packetRssi()));
-  display.setCursor(0,50);
-  display.print("Snr: " + String(LoRa.packetSnr()));
   display.display(); 
 }
+
