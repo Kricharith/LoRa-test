@@ -1,4 +1,6 @@
 #include <EasyButton.h>
+#include <SPI.h>
+#include <LoRa.h>
 
 #include <LiquidCrystal_I2C.h>
 #include <Adafruit_AHTX0.h>
@@ -7,9 +9,19 @@
 #include "DHT.h"
 
 const unsigned long timeShowLcd = 30000;
+const unsigned long timeSenData = 30000;
 
 #define SW 25
 #define LED 23
+
+//LoRa
+#define SCK 5
+#define MISO 19
+#define MOSI 27
+#define SS 18
+#define RST 14
+#define DIO0 26
+#define BAND 923E6
 
 #define DHTPIN 15
 #define DHTTYPE DHT22
@@ -22,7 +34,11 @@ Adafruit_AHTX0 aht;
 LiquidCrystal_I2C lcd(0x27, 16, 2);
 EasyButton button(SW);
 
-unsigned long startTime = 0;
+String LoRaData = "";
+bool sendSuccess = false;
+
+unsigned long buttonTime = 0;
+unsigned long readTime = 0;
 unsigned long currentTime = 0;
 
 float t_in_a, h_in_a, t_in_b, h_in_b;
@@ -176,7 +192,7 @@ void display() {
   // lcd.noDisplay();
   // lcd.noBacklight();
   // delay(5000);
-  startTime = currentTime;
+  buttonTime = currentTime;
 }
 
 void readSensor() {
@@ -186,6 +202,30 @@ void readSensor() {
   dht22();
   Serial.println("This is function readSensor");
   // display();
+}
+
+void initLoRa(){
+  SPI.begin(SCK, MISO, MOSI, SS);
+  LoRa.setPins(SS, RST, DIO0);
+  while (!LoRa.begin(BAND)) {
+    Serial.println("Starting LoRa failed!");
+    delay(500);
+  }
+  Serial.println("LoRa Initializing OK!");
+}
+
+void sentLoRa(){
+  LoRa.beginPacket();
+  LoRaData = t_in_a,h_in_a; 
+  LoRa.print(LoRaData);
+  LoRa.endPacket();
+  Serial.print("LoRa packet sent. : temp ");
+  Serial.println(LoRaData);
+  LoRaData = "";
+}
+
+void onReceive(){
+
 }
 
 void resetSys() {
@@ -209,6 +249,7 @@ void setup() {
   Serial.begin(115200);
   Wire.begin();
   dht.begin();
+  initLoRa();
   button.begin();
   button.onPressedFor(5000, resetSys);
   button.onPressed(activeLcd);
@@ -219,7 +260,13 @@ void loop() {
   // Serial.println("Hello loop");
 
   currentTime = millis();
-  if(currentTime - startTime >= timeShowLcd){
+  if(currentTime - readTime >= timeSenData){
+    readTime = currentTime;
+    readSensor();
+    sentLoRa();
+  }
+
+  if(currentTime - buttonTime >= timeShowLcd){
     lcd.clear();
     lcd.noDisplay();
     lcd.noBacklight();
