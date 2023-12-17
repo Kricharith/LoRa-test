@@ -203,6 +203,9 @@ void setup() {
   pinMode(SW, INPUT_PULLUP);
   pinMode(LED, OUTPUT);
   lcd.begin();
+  lcd.clear();
+  lcd.noDisplay();
+  lcd.noBacklight();
   Serial.begin(115200);
   Wire.begin();
   dht.begin();
