@@ -216,16 +216,56 @@ void initLoRa(){
 
 void sentLoRa(){
   LoRa.beginPacket();
-  LoRaData = t_in_a,h_in_a; 
+  LoRaData = String(t_in_a) + "," + String(h_in_a); 
   LoRa.print(LoRaData);
   LoRa.endPacket();
   Serial.print("LoRa packet sent. : temp ");
   Serial.println(LoRaData);
   LoRaData = "";
+  onReceive();
 }
 
 void onReceive(){
+  int count = 0;
+  
+  while (true) {
+    unsigned long currentMillis = millis();
 
+    int packetSize = LoRa.parsePacket();
+    // Serial.println("Wait data");
+    if (packetSize) {
+      //received a packet
+      Serial.print("Received packet : ");
+
+      //read packet
+      while (LoRa.available()) {
+        LoRaData = LoRa.readString();
+        Serial.println(LoRaData);
+      }
+
+      //print RSSI of packet
+      int rssi = LoRa.packetRssi();
+      int snr = LoRa.packetSnr();
+      Serial.print("Data RSSI : ");
+      Serial.println(rssi);
+      Serial.print("Data SNR : ");
+      Serial.println(snr);
+      counter++;
+      if (LoRaData.equals("CPE")) {
+        sendSuccess = true;
+      }
+      count = 0;
+      break;
+    }
+
+    if (currentMillis - previousMillis >= 1000) {
+      previousMillis = currentMillis;
+      count++;
+    }
+    if(count == 5){
+      break;
+    }
+  }
 }
 
 void resetSys() {
@@ -263,7 +303,17 @@ void loop() {
   if(currentTime - readTime >= timeSenData){
     readTime = currentTime;
     readSensor();
-    sentLoRa();
+    while (true) {
+      if(sendSuccess == false){
+        sentLoRa();
+      }
+      else{
+        Serial.println("LoRa send Success");
+        break;
+      }
+    
+    }
+    
   }
 
   if(currentTime - buttonTime >= timeShowLcd){
