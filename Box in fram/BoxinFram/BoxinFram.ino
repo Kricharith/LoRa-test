@@ -6,6 +6,8 @@
 #include "Wire.h"
 #include "DHT.h"
 
+const unsigned long timeShowLcd = 30000;
+
 #define SW 25
 #define LED 23
 
@@ -20,9 +22,12 @@ Adafruit_AHTX0 aht;
 LiquidCrystal_I2C lcd(0x27, 16, 2);
 EasyButton button(SW);
 
+unsigned long startTime = 0;
+unsigned long currentTime = 0;
+
 float t_in_a, h_in_a, t_in_b, h_in_b;
 int h_in_s;
-bool status_sw = 0;
+bool status_sw = false;
 sensors_event_t humidity, temp;
 
 uint8_t buf[4] = { 0 };
@@ -133,9 +138,10 @@ void dht22() {
 }
 
 void display() {
+  Serial.println("This is function display!!!");
   lcd.display();  // เปิดการแสดงตัวอักษร
   lcd.backlight();
-  delay(4000);
+  lcd.clear();
   lcd.setCursor(0, 0);
   lcd.print("T in Air : ");
   lcd.setCursor(11, 0);
@@ -144,33 +150,33 @@ void display() {
   lcd.print("H in Air : ");
   lcd.setCursor(11, 1);
   lcd.print(h_in_a);
-  delay(4000);  // หน่วงเวลา 0.5 วินาที
-  lcd.clear();  // ล้างหน้าจอ
-  lcd.setCursor(0, 0);
-  lcd.print("T in Box : ");
-  lcd.setCursor(11, 0);
-  lcd.print(t_in_b);
-  lcd.setCursor(0, 1);
-  lcd.print("H in Box : ");
-  lcd.setCursor(11, 1);
-  lcd.print(h_in_b);
-  delay(4000);  // หน่วงเวลา 0.5 วินาที
-  lcd.clear();  // ล้างหน้าจอ
-  lcd.setCursor(0, 0);
-  lcd.print("LUX:");
-  lcd.setCursor(4, 0);
-  lcd.print(Lux);
-  lcd.setCursor(9, 0);
-  lcd.print(" lx");
-  lcd.setCursor(0, 1);
-  lcd.print("H in S:");
-  lcd.setCursor(10, 1);
-  lcd.print(h_in_s);
-  delay(4000);  // หน่วงเวลา 0.5 วินาที
-  lcd.clear();  // ล้างหน้าจอ
-  lcd.noDisplay();
-  lcd.noBacklight();
+  // lcd.clear();  // ล้างหน้าจอ
+  // lcd.setCursor(0, 0);
+  // lcd.print("T in Box : ");
+  // lcd.setCursor(11, 0);
+  // lcd.print(t_in_b);
+  // lcd.setCursor(0, 1);
+  // lcd.print("H in Box : ");
+  // lcd.setCursor(11, 1);
+  // lcd.print(h_in_b);
+  // delay(4000);  // หน่วงเวลา 0.5 วินาที
+  // lcd.clear();  // ล้างหน้าจอ
+  // lcd.setCursor(0, 0);
+  // lcd.print("LUX:");
+  // lcd.setCursor(4, 0);
+  // lcd.print(Lux);
+  // lcd.setCursor(9, 0);
+  // lcd.print(" lx");
+  // lcd.setCursor(0, 1);
+  // lcd.print("H in S:");
+  // lcd.setCursor(10, 1);
+  // lcd.print(h_in_s);
+  // delay(4000);  // หน่วงเวลา 0.5 วินาที
+  // lcd.clear();  // ล้างหน้าจอ
+  // lcd.noDisplay();
+  // lcd.noBacklight();
   // delay(5000);
+  startTime = currentTime;
 }
 
 void readSensor() {
@@ -189,7 +195,8 @@ void resetSys() {
 
 void activeLcd(){
   readSensor();
-  Serial.println("this is function onPressed!!");
+  Serial.println("this is function activeLcd!!");
+  display();
 }
 
 void setup() {
@@ -207,8 +214,13 @@ void setup() {
 void loop() {
   button.read();
   // Serial.println("Hello loop");
-  lcd.noDisplay();
-  lcd.noBacklight();
+
+  currentTime = millis();
+  if(currentTime - startTime >= timeShowLcd){
+    lcd.clear();
+    lcd.noDisplay();
+    lcd.noBacklight();
+  }
   // if (status_sw == true) {
   //   scanI2C();
   //   status_sw = false;
