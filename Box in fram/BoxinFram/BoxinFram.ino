@@ -40,6 +40,7 @@ bool sendSuccess = false;
 unsigned long buttonTime = 0;
 unsigned long readTime = 0;
 unsigned long currentTime = 0;
+unsigned long loRaTime = 0;
 
 float t_in_a, h_in_a, t_in_b, h_in_b;
 int h_in_s;
@@ -250,7 +251,6 @@ void onReceive(){
       Serial.println(rssi);
       Serial.print("Data SNR : ");
       Serial.println(snr);
-      counter++;
       if (LoRaData.equals("CPE")) {
         sendSuccess = true;
       }
@@ -258,8 +258,8 @@ void onReceive(){
       break;
     }
 
-    if (currentMillis - previousMillis >= 1000) {
-      previousMillis = currentMillis;
+    if (currentMillis - loRaTime >= 1000) {
+      loRaTime = currentMillis;
       count++;
     }
     if(count == 5){
