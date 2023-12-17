@@ -201,7 +201,7 @@ void setup() {
   dht.begin();
   button.begin();
   button.onPressedFor(5000, resetSys);
-  button.onPressed(onPressed);
+  button.onPressed(activeLcd);
 }
 
 void loop() {
