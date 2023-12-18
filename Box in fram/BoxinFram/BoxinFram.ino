@@ -9,7 +9,7 @@
 #include "DHT.h"
 
 const unsigned long timeShowLcd = 30000;
-const unsigned long timeSenData = 30000;
+const unsigned long timeSentData = 60000;
 
 #define SW 25
 #define LED 23
@@ -41,6 +41,7 @@ unsigned long buttonTime = 0;
 unsigned long readTime = 0;
 unsigned long currentTime = 0;
 unsigned long loRaTime = 0;
+int countSentData = 0;
 
 float t_in_a, h_in_a, t_in_b, h_in_b;
 int h_in_s;
@@ -216,6 +217,7 @@ void initLoRa(){
 }
 
 void sentLoRa(){
+  Serial.println("This is fanction sentLoRa!!");
   LoRa.beginPacket();
   LoRaData = String(t_in_a) + "," + String(h_in_a); 
   LoRa.print(LoRaData);
@@ -261,8 +263,10 @@ void onReceive(){
     if (currentMillis - loRaTime >= 1000) {
       loRaTime = currentMillis;
       count++;
+      countSentData++;
     }
     if(count == 5){
+      countSentData = 0;
       break;
     }
   }
@@ -300,20 +304,23 @@ void loop() {
   // Serial.println("Hello loop");
 
   currentTime = millis();
-  if(currentTime - readTime >= timeSenData){
+  if(currentTime - readTime >= timeSentData){
     readTime = currentTime;
     readSensor();
     while (true) {
       if(sendSuccess == false){
         sentLoRa();
       }
-      else{
-        Serial.println("LoRa send Success");
+      else if(countSentData > 60){
+        Serial.println("LoRa send failed");
         break;
       }
-    
+      else{
+        Serial.println("LoRa send Success");
+        sendSuccess = false;
+        break;
+      }
     }
-    
   }
 
   if(currentTime - buttonTime >= timeShowLcd){
