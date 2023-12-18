@@ -264,9 +264,9 @@ void onReceive(){
       loRaTime = currentMillis;
       count++;
       countSentData++;
+      Serial.println(countSentData);
     }
     if(count == 5){
-      countSentData = 0;
       break;
     }
   }
@@ -278,8 +278,8 @@ void resetSys() {
 }
 
 void activeLcd(){
-  readSensor();
   Serial.println("this is function activeLcd!!");
+  readSensor();
   display();
 }
 
@@ -305,19 +305,23 @@ void loop() {
 
   currentTime = millis();
   if(currentTime - readTime >= timeSentData){
+    Serial.println("This is begin read sensor!!!");
     readTime = currentTime;
     readSensor();
     while (true) {
-      if(sendSuccess == false){
+      if(sendSuccess == false && countSentData < 30){
+        Serial.println("state sendSuccess");
         sentLoRa();
       }
-      else if(countSentData > 60){
+      else if(countSentData >= 30){
         Serial.println("LoRa send failed");
+        countSentData = 0;
         break;
       }
       else{
         Serial.println("LoRa send Success");
         sendSuccess = false;
+        countSentData = 0;
         break;
       }
     }
