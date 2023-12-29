@@ -148,14 +148,14 @@ void onReceive() {
             String sender = "0x"+String(payloadArray[1].toInt(), HEX);            // sender address
             String incomingLength = payloadArray[2];    // incoming msg length
             String data = "";
-            // Serial.print("data: ");
+            Serial.print("data: ");
             // Serial.println(payloadArray[0]);
             if(recipient == "0xf1" && sender == "0xbb"){
                 for (int i = 3; i < arraySize; i++) {
                     data += payloadArray[i];
                 }
                 Serial.println("Read Pass");   
-                if(data.equals("CPE5")) {
+                if(data.equals("CPE")) {
                     Serial.println("CPE Pass");
                     Serial.print("Received from: ");
                     Serial.println(recipient);
