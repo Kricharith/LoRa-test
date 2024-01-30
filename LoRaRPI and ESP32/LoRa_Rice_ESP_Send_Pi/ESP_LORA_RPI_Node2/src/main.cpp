@@ -27,6 +27,7 @@
 gpio_num_t wakeup_gpio = GPIO_NUM_2;
 gpio_num_t ledStatus_gpio = GPIO_NUM_33;
 // Adafruit_INA219 ina219;
+///////////////////////////////////////////////
 bool statusNode = false;
 bool stateSetZero = false;
 bool mode = false;
@@ -92,12 +93,12 @@ void setup() {
   // mySerial.begin(9600);
   EEPROM.begin(512); // You can change the size based on your requirements
   // Set data to EEPROM
-  // EEPROM.put(addr_mode, mode);
-  // EEPROM.put(addr_timeNormalMode, timeNormalMode);
-  // EEPROM.put(addr_timeDebugMode, timeDebugMode);
-  // EEPROM.put(addr_zeroDistance, zeroDistance);
-  // EEPROM.put(addr_statusNode, statusNode);
-  // EEPROM.commit();
+  EEPROM.put(addr_mode, mode);
+  EEPROM.put(addr_timeNormalMode, timeNormalMode);
+  EEPROM.put(addr_timeDebugMode, timeDebugMode);
+  EEPROM.put(addr_zeroDistance, zeroDistance);
+  EEPROM.put(addr_statusNode, statusNode);
+  EEPROM.commit();
   EEPROM.get(addr_mode, mode);
   EEPROM.get(addr_timeNormalMode, timeNormalMode);
   EEPROM.get(addr_timeDebugMode, timeDebugMode);

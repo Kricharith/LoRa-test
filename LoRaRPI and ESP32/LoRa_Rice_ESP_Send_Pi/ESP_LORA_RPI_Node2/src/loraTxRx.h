@@ -15,7 +15,7 @@ extern const int csPin = 7;          // LoRa radio chip select
 extern const int resetPin = 6;       // LoRa radio reset
 extern const int irqPin = 1;         // change for your board; must be a hardware interrupt pin
 
-byte localAddress = 0xA1;     // address of this device
+byte localAddress = 0xB1;     // address of this device
 byte destination = 0xBB;      // destination to send to
 extern bool sendSuccess = false;
 extern bool resendData = false;
@@ -80,7 +80,7 @@ void onReceive() {
               String recipient = "0x"+String(payloadArray[0].toInt(), HEX);          // recipient address
               String sender = "0x"+String(payloadArray[1].toInt(), HEX);            // sender address
               String incomingLength = payloadArray[2];    // incoming msg length
-              if(recipient == "0xa1" && sender == "0xbb"){
+              if(recipient == "0xb1" && sender == "0xbb"){
                 receiveData = rawPayload;
                 sendSuccess = true;
                 resendData = false;
