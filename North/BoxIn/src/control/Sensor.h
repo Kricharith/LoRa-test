@@ -122,5 +122,5 @@ String readSensorAll()
     readHumiInSoil();
     readLight();
     readTempInBox();
-    return String(t_in_b) +","+ String(h_in_b) +","+ String(t_in_a) +","+ String(h_in_a) +","+ String(h_in_s) +","+ String(Lux);
+    return String(t_in_b) +","+ String(t_in_a) +","+ String(h_in_a) +","+ String(h_in_b) +","+ String(h_in_s) +","+ String(Lux)+",90.0";
 }

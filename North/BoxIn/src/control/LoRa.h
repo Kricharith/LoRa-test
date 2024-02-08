@@ -11,8 +11,10 @@
 #define BAND 923E6
 #endif
 
+#define ADDR_SOUCE 0xAA
+#define ADDR_DEST 0xFF
+
 unsigned long loraTime = 0;
-int btnState = 0;
 
 void initLoRa()
 {
@@ -26,62 +28,80 @@ void initLoRa()
     Serial.println("LoRa Initializing OK!");
 }
 
-bool receiveLoRa()
+bool checkDataLoRa()
 {
-    while (true)
+    String loraData[4];
+    String receiveData;
+    int startIndex = 0;
+    int endIndex = 0;
+    String deposit;
+    int i = 0;
+    while (LoRa.available())
     {
-        String LoRaData;
-        unsigned long currentMillis = millis();
+        receiveData = LoRa.readString();
+        Serial.print("Receive : ");
+        Serial.println(receiveData);
+    }
 
-        int packetSize = LoRa.parsePacket();
-        // Serial.println("Wait data");
-        if (packetSize)
+    // print RSSI of packet
+    int rssi = LoRa.packetRssi();
+    int snr = LoRa.packetSnr();
+    Serial.print("Data RSSI : ");
+    Serial.println(rssi);
+    Serial.print("Data SNR : ");
+    Serial.println(snr);
+
+    for (int i = 0; i < 4; i++)
+    {
+        endIndex = receiveData.indexOf(',', startIndex);
+        if (endIndex == -1)
         {
-            // received a packet
-            Serial.print("Received packet : ");
-
-            // read packet
-            while (LoRa.available())
-            {
-                LoRaData = LoRa.readString();
-                Serial.println(LoRaData);
-            }
-
-            // print RSSI of packet
-            int rssi = LoRa.packetRssi();
-            int snr = LoRa.packetSnr();
-            Serial.print("Data RSSI : ");
-            Serial.println(rssi);
-            Serial.print("Data SNR : ");
-            Serial.println(snr);
-            if (LoRaData.equals("CPE"))
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            endIndex = receiveData.length();
         }
-        // if (btnState == 11)
+        loraData[i] = receiveData.substring(startIndex, endIndex);
+        startIndex = endIndex + 1;
+    }
+    // Serial.print("loraData[0]");
+    // Serial.println(loraData[0]);
+    // Serial.print("loraData[1]");
+    // Serial.println(loraData[1]);
+    // Serial.print("loraData[2]");
+    // Serial.println(loraData[2]);
+    // return true;
+
+    if (loraData[0].equals(String(ADDR_DEST, DEC)) && loraData[1].equals(String(ADDR_SOUCE, DEC)))
+    {
+        // if (loraData[2].equals("1"))
+        // {
+        //     return true;
+        // }
+        // else
         // {
         //     return false;
         // }
-        if (currentMillis - loraTime >= 5000)
-        {
-            loraTime = currentMillis;
-            return false;
-        }
+        return true;
     }
+    else
+    {
+        return false;
+    }
+}
+
+int receiveLoRa()
+{
+    int packetSize = LoRa.parsePacket();
+    return packetSize;
 }
 
 void sentLoRa(byte souce, byte destination, String LoRaData)
 {
     // Serial.println("This is fanction sentLoRa!!");
+    Serial.println("LoRa sent");
     LoRa.beginPacket();
     // LoRaData = String(t_in_a) + "," + String(h_in_a);
-    LoRa.print(souce);
-    LoRa.print(destination);
+    LoRa.write(souce);
+    LoRa.write(destination);
+    LoRa.write(LoRaData.length());
     LoRa.print(LoRaData);
     LoRa.endPacket();
     Serial.print("LoRa packet sent. : ");

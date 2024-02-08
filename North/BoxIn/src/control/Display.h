@@ -5,22 +5,31 @@ LiquidCrystal_I2C lcd(0x27, 20, 4);
 
 int lcdState = 0;
 
-void lcdActive()
-{
-    Serial.println("lcdActive");
+void lcdInit(){
     lcd.display(); // เปิดการแสดงตัวอักษร
     lcd.backlight();
     lcd.clear();
+}
+
+void lcdActive()
+{
+    Serial.println("lcdActive");
+    lcdInit();
     lcd.setCursor(0, 0);
     lcd.print("Please wait");
     // Serial.println("LCD Active please wait");
 }
 
+void lcdShutdown()
+{
+    lcd.clear();
+    lcd.noDisplay();
+    lcd.noBacklight();
+}
+
 void showMode(bool mode)
 {
-    lcd.display();
-    lcd.backlight();
-    lcd.clear();
+    lcdInit();
     lcd.setCursor(0, 0);
     if (mode)
     {
@@ -34,10 +43,8 @@ void showMode(bool mode)
 
 void lcdFirstPage(String batt, float lux, float temp, float humi)
 {
+    lcdInit();
     Serial.println("lcdFirstPage");
-    lcd.display();
-    lcd.backlight();
-    lcd.clear();
     lcd.setCursor(0, 0);
     lcd.print("Batterry :");
     lcd.setCursor(11, 0);
@@ -58,10 +65,8 @@ void lcdFirstPage(String batt, float lux, float temp, float humi)
 
 void lcdSecondPage(float tempA, float humiA, float humiS)
 {
+    lcdInit();
     Serial.println("lcdSecondPage");
-    lcd.display();
-    lcd.backlight();
-    lcd.clear();
     lcd.setCursor(0, 0);
     lcd.print("T in Air :");
     lcd.setCursor(11, 0);
