@@ -5,7 +5,8 @@ LiquidCrystal_I2C lcd(0x27, 20, 4);
 
 int lcdState = 0;
 
-void lcdInit(){
+void lcdInit()
+{
     lcd.display(); // เปิดการแสดงตัวอักษร
     lcd.backlight();
     lcd.clear();
@@ -41,8 +42,13 @@ void showMode(bool mode)
     }
 }
 
-void lcdFirstPage(String batt, float lux, float temp, float humi)
+void lcdFirstPage(float batt, float lux, float temp, float humi)
 {
+    Serial.print("in Display : ");
+    Serial.print("t_in_b : ");
+    Serial.println(t_in_b);
+    Serial.print("h_in_b : ");
+    Serial.println(h_in_b);
     lcdInit();
     Serial.println("lcdFirstPage");
     lcd.setCursor(0, 0);

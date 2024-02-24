@@ -28,14 +28,15 @@ void initLoRa()
     Serial.println("LoRa Initializing OK!");
 }
 
-bool checkDataLoRa()
+int checkDataLoRa()
 {
-    String loraData[4];
+    int lengthData = 4;
+    String loraData[lengthData];
     String receiveData;
     int startIndex = 0;
     int endIndex = 0;
-    String deposit;
-    int i = 0;
+    int i = 0, count = 0;
+
     while (LoRa.available())
     {
         receiveData = LoRa.readString();
@@ -51,16 +52,33 @@ bool checkDataLoRa()
     Serial.print("Data SNR : ");
     Serial.println(snr);
 
-    for (int i = 0; i < 4; i++)
+    for (i = 0; i < receiveData.length(); i++)
     {
-        endIndex = receiveData.indexOf(',', startIndex);
-        if (endIndex == -1)
+        if (receiveData[i] == ',')
         {
-            endIndex = receiveData.length();
+            count++;
+            // Serial.println("Receive data");
+            // return 11;
         }
-        loraData[i] = receiveData.substring(startIndex, endIndex);
-        startIndex = endIndex + 1;
     }
+    if (count == lengthData-1)
+    {
+        for (int i = 0; i < lengthData; i++)
+        {
+            endIndex = receiveData.indexOf(',', startIndex);
+            if (endIndex == -1)
+            {
+                endIndex = receiveData.length();
+            }
+            loraData[i] = receiveData.substring(startIndex, endIndex);
+            startIndex = endIndex + 1;
+        }
+    }
+    else{
+        return 3;
+        Serial.println("Receive data is not 0-9 or \",\"");
+    }
+
     // Serial.print("loraData[0]");
     // Serial.println(loraData[0]);
     // Serial.print("loraData[1]");
@@ -68,22 +86,22 @@ bool checkDataLoRa()
     // Serial.print("loraData[2]");
     // Serial.println(loraData[2]);
     // return true;
-
-    if (loraData[0].equals(String(ADDR_DEST, DEC)) && loraData[1].equals(String(ADDR_SOUCE, DEC)))
+    if (loraData[0].equals(String(ADDR_DEST, DEC)) && loraData[1].equals(String(ADDR_SOUCE, DEC))) // Addr true
     {
-        // if (loraData[2].equals("1"))
-        // {
-        //     return true;
-        // }
-        // else
-        // {
-        //     return false;
-        // }
-        return true;
+        Serial.println("Check LoRa");
+        if (loraData[2].equals("1") && loraData[3].equals("0")) // Hard reset == 0
+        {
+            Serial.println("Check LoRa return 1");
+            return 1;
+        }
+        else if (loraData[3].equals("1")) // Hard reset == 1
+        {
+            return 2;
+        }
     }
-    else
+    else // Addr false
     {
-        return false;
+        return 3;
     }
 }
 

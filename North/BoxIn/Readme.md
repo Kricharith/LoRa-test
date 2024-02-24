@@ -23,3 +23,6 @@ support pressed BTN to change mode when ESP32 sleep <br>
 # LCD in front <br>
 change lcd every 5 sec <br>
 lcd active 60 sec <br>
+
+# Web server <br>
+Can Hard reset from web server<br>
